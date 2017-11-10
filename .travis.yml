@@ -1,0 +1,27 @@
+language: php
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
+matrix:
+  fast_finish: true
+  include:
+    - php: '7.1'
+      env: TARGET=phpcs
+    - php: '7.1'
+      env: TARGET=phpmd
+    - php: '7.1'
+      env: TARGET=phpunit
+
+before_script:
+  - composer self-update
+  - composer install
+
+script:
+  - if [ "$TARGET" = "phpunit" ]; then composer install; fi
+  - if [ "$TARGET" = "phpunit" ]; then phpunit --coverage-clover=coverage.clover; fi
+  - if [ "$TARGET" = "phpunit" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [ "$TARGET" = "phpunit" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+  - if [ "$TARGET" = "phpmd" ]; then bin/phpmd src text ./phpmd-ruleset.xml --suffixes php; fi
+  - if [ "$TARGET" = "phpcs" ]; then bin/phpcs $PWD/src --standard=PSR2; fi
