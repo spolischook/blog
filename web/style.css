@@ -27,3 +27,9 @@ body {
     max-width: 800px;
     padding: 0 15px;
 }
+
+.about-me svg {
+    background-color: black;
+    width: 18px;
+    margin-top: 5px;
+}
